@@ -6,13 +6,19 @@ type TabMenuItem = {
 }
 
 export type TabMenu = {
-  id: 'user' | 'team' | 'remote'
+  id: 'dashboard' | 'user' | 'team' | 'remote'
   triggerLabel: string
   ariaLabel: string
   items: TabMenuItem[]
 }
 
 export const TAB_MENUS: TabMenu[] = [
+  {
+    id: 'dashboard',
+    triggerLabel: 'Dashboard',
+    ariaLabel: 'Dashboard options',
+    items: [{ label: 'Dashboard', to: APP_ROUTES.dashboard }],
+  },
   {
     id: 'user',
     triggerLabel: 'User Management',

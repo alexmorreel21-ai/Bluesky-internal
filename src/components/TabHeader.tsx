@@ -40,28 +40,34 @@ function TabHeader() {
 
       <nav className="tab-nav" aria-label="Dashboard navigation" ref={navRef}>
         {TAB_MENUS.map((menu) => (
-          <div className={openMenu === menu.id ? 'tab-dropdown is-open' : 'tab-dropdown'} key={menu.id}>
-            <button
-              className="tab tab-dropdown-trigger"
-              type="button"
-              aria-haspopup="menu"
-              aria-expanded={openMenu === menu.id}
-              onClick={() => setOpenMenu((current) => (current === menu.id ? null : menu.id))}
-            >
+          menu.id === 'dashboard' ? (
+            <NavLink key={menu.id} className={({ isActive }) => (isActive ? 'tab is-active' : 'tab')} to={menu.items[0].to}>
               {menu.triggerLabel}
-            </button>
-            {openMenu === menu.id && (
-              <ul className="tab-dropdown-menu" role="menu" aria-label={menu.ariaLabel}>
-                {menu.items.map((item) => (
-                  <li key={item.to}>
-                    <NavLink className="tab-dropdown-link" to={item.to} onClick={() => setOpenMenu(null)}>
-                      {item.label}
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+            </NavLink>
+          ) : (
+            <div className={openMenu === menu.id ? 'tab-dropdown is-open' : 'tab-dropdown'} key={menu.id}>
+              <button
+                className="tab tab-dropdown-trigger"
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={openMenu === menu.id}
+                onClick={() => setOpenMenu((current) => (current === menu.id ? null : menu.id))}
+              >
+                {menu.triggerLabel}
+              </button>
+              {openMenu === menu.id && (
+                <ul className="tab-dropdown-menu" role="menu" aria-label={menu.ariaLabel}>
+                  {menu.items.map((item) => (
+                    <li key={item.to}>
+                      <NavLink className="tab-dropdown-link" to={item.to} onClick={() => setOpenMenu(null)}>
+                        {item.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )
         ))}
       </nav>
 

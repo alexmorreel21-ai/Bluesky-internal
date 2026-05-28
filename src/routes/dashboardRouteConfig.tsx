@@ -2,6 +2,7 @@ import type { ReactElement } from 'react'
 import { APP_ROUTES } from './appRoutes'
 import TeamManagementPage from '../User/TeamManagementPage'
 import UserManagementPage from '../User/UserManagementPage'
+import EcommerceDashboardPage from '../components/EcommerceDashboardPage'
 import RoutePlaceholder from '../components/RoutePlaceholder'
 
 type DashboardRouteConfig = {
@@ -12,7 +13,7 @@ type DashboardRouteConfig = {
 export const DASHBOARD_ROUTE_CONFIG: DashboardRouteConfig[] = [
   {
     path: APP_ROUTES.dashboard,
-    element: <RoutePlaceholder title="Dashboard" />,
+    element: <EcommerceDashboardPage />,
   },
   {
     path: APP_ROUTES.userManagement,
