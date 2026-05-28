@@ -1,16 +1,8 @@
 import './App.css'
-import { Route, Routes } from 'react-router-dom'
-import DashboardShell from './components/DashboardShell'
-import LoginWindow from './components/LoginWindow'
-import { APP_ROUTES } from './constants/routes'
+import AppRouter from './routes/AppRouter'
 
 function App() {
-  return (
-    <Routes>
-      <Route path={APP_ROUTES.login} element={<LoginWindow />} />
-      <Route path="*" element={<DashboardShell />} />
-    </Routes>
-  )
+  return <AppRouter />
 }
 
 export default App

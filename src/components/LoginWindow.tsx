@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { signIn, isAuthenticated } from '../auth/session'
-import { APP_ROUTES } from '../constants/routes'
+import { APP_ROUTES } from '../routes/appRoutes'
 
 const MANAGER_EMAIL = 'manager@bluesky.com'
 const MANAGER_PASSWORD = '1234567890'
@@ -15,11 +15,11 @@ function LoginWindow() {
 
   const nextPath =
     (location.state as { from?: { pathname?: string } } | undefined)?.from?.pathname ||
-    APP_ROUTES.userManagement
+    APP_ROUTES.dashboard
 
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate(APP_ROUTES.userManagement, { replace: true })
+      navigate(APP_ROUTES.dashboard, { replace: true })
     }
   }, [navigate])
 

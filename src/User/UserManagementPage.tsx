@@ -1,21 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { CreateUserPayload, ManagedUser, Permission } from './Table'
 
-type Permission = 'Manager' | 'TeamLeader' | 'TeamMember'
-
-type ManagedUser = {
-  id: string
-  username: string
-  email: string
-  password?: string
-  permission: Permission
-  status: 'ACTIVE' | 'INVITED'
-}
-
-type CreateUserPayload = {
-  username: string
-  email: string
-  password: string
-  permission: Permission
+function isValidTeamLeaderEmail(email: string): boolean {
+  return /^[a-z0-9._%+-]+@[a-z0-9-]+\.com$/i.test(email)
 }
 
 const MANAGER_ACCOUNT: ManagedUser = {
@@ -26,8 +13,6 @@ const MANAGER_ACCOUNT: ManagedUser = {
   permission: 'Manager',
   status: 'ACTIVE',
 }
-
-const fallbackUsers: ManagedUser[] = [MANAGER_ACCOUNT]
 
 function ensureManagerAccount(users: ManagedUser[]): ManagedUser[] {
   const hasManager = users.some(
@@ -67,6 +52,24 @@ async function createUser(payload: CreateUserPayload): Promise<ManagedUser> {
   return (await response.json()) as ManagedUser
 }
 
+async function deleteUser(userId: string): Promise<void> {
+  const response = await fetch(`/api/users/${encodeURIComponent(userId)}`, {
+    method: 'DELETE',
+    headers: { Accept: 'application/json' },
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to delete account.')
+  }
+}
+
+function isManagerAccount(user: ManagedUser): boolean {
+  return (
+    user.permission === 'Manager' ||
+    (user.username === MANAGER_ACCOUNT.username && user.email === MANAGER_ACCOUNT.email)
+  )
+}
+
 function UserManagementPage() {
   const [users, setUsers] = useState<ManagedUser[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -89,8 +92,8 @@ function UserManagementPage() {
         }
       } catch {
         if (isMounted) {
-          setUsers(fallbackUsers)
-          setErrorMessage('Backend unavailable. Showing local admin-only seed data.')
+          setUsers([])
+          setErrorMessage('Backend unavailable. Failed to load users from API.')
         }
       } finally {
         if (isMounted) {
@@ -118,6 +121,11 @@ function UserManagementPage() {
       return
     }
 
+    if (permission === 'TeamLeader' && !isValidTeamLeaderEmail(email.trim())) {
+      setErrorMessage('For TeamLeader, use email format: leadername@teamname.com')
+      return
+    }
+
     const payload: CreateUserPayload = {
       username: username.trim(),
       email: email.trim(),
@@ -134,20 +142,25 @@ function UserManagementPage() {
       setPassword('')
       setPermission('TeamMember')
     } catch {
-      // Keep frontend workflow testable when backend is not connected.
-      const localUser: ManagedUser = {
-        id: crypto.randomUUID(),
-        username: payload.username,
-        email: payload.email,
-        permission: payload.permission,
-        status: 'INVITED',
-      }
-      setUsers((currentUsers) => [localUser, ...currentUsers])
-      setSuccessMessage('Created locally. Connect backend API to persist new credentials.')
-      setUsername('')
-      setEmail('')
-      setPassword('')
-      setPermission('TeamMember')
+      setErrorMessage('Failed to create user credentials via API.')
+    }
+  }
+
+  async function handleDelete(user: ManagedUser) {
+    setErrorMessage('')
+    setSuccessMessage('')
+
+    if (isManagerAccount(user)) {
+      setErrorMessage('Manager accounts cannot be deleted.')
+      return
+    }
+
+    try {
+      await deleteUser(user.id)
+      setUsers((currentUsers) => currentUsers.filter((currentUser) => currentUser.id !== user.id))
+      setSuccessMessage('Account deleted successfully.')
+    } catch {
+      setErrorMessage('Failed to delete account via API.')
     }
   }
 
@@ -155,9 +168,6 @@ function UserManagementPage() {
     <section className="user-mgmt" aria-label="User management">
       <header className="user-mgmt-head">
         <h1>User Management</h1>
-        <p>
-          Admin creates login credentials and provides them to users. Self-registration is disabled.
-        </p>
         <p className="user-mgmt-note">
           Manager account is fixed to <strong>manager</strong> / <strong>manager@bluesky.com</strong>{' '}
           / <strong>1234567890</strong>.
@@ -195,7 +205,9 @@ function UserManagementPage() {
                       type="email"
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
-                      placeholder="jane@company.com"
+                      placeholder={
+                        permission === 'TeamLeader' ? 'leadername@teamname.com' : 'jane@company.com'
+                      }
                       required
                     />
                   </td>
@@ -246,6 +258,7 @@ function UserManagementPage() {
                   <th>Email</th>
                   <th>Permission</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -259,6 +272,16 @@ function UserManagementPage() {
                       </span>
                     </td>
                     <td>{user.status}</td>
+                    <td>
+                      <button
+                        type="button"
+                        className="delete-account-button"
+                        onClick={() => handleDelete(user)}
+                        disabled={isManagerAccount(user)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

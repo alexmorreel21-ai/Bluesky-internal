@@ -1,5 +1,6 @@
 export const APP_ROUTES = {
   login: '/login',
+  dashboard: '/dashboard',
   userManagement: '/user-management',
   teamManagement: '/team-management',
   teamDailyReport: '/team-management/daily-report',
