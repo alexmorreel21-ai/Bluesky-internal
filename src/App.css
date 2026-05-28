@@ -1,8 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700&display=swap');
 
 .dashboard-shell {
   min-height: 100svh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
+  overflow: hidden;
 }
 
 .tab-header {
@@ -179,10 +183,12 @@
 }
 
 .tab-content {
-  min-height: calc(100svh - 57px);
+  flex: 1;
+  min-height: 0;
   display: grid;
   place-items: center;
   padding: 2rem 1rem;
+  overflow: auto;
 }
 
 .route-panel {
@@ -503,7 +509,12 @@
 }
 
 .user-mgmt {
-  width: min(100%, 72rem);
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-self: stretch;
+  align-self: stretch;
   border: 1px solid #d5d8dd;
   border-radius: 0.8rem;
   background: #ffffff;
@@ -562,6 +573,12 @@
 .user-mgmt-feedback,
 .user-mgmt-list {
   padding: 1.25rem;
+}
+
+.user-mgmt-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-mgmt-list h2 {
@@ -699,6 +716,7 @@
 .user-mgmt-list table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 0.25rem;
 }
 
 .user-mgmt-list th,
@@ -1043,6 +1061,565 @@
   font-size: 0.88rem;
 }
 
+.daily-report {
+  width: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-self: stretch;
+  align-self: stretch;
+  border: 1px solid #d5d8dd;
+  border-radius: 0.8rem;
+  background: #ffffff;
+  box-shadow: 0 18px 36px rgba(12, 32, 61, 0.08);
+  overflow: hidden;
+}
+
+.daily-report-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.35rem 1.35rem 1.1rem;
+  border-bottom: 1px solid #e3e7ef;
+}
+
+.daily-report-head h1 {
+  margin: 0;
+  color: #1f2f46;
+  font-size: 1.4rem;
+}
+
+.daily-report-note {
+  margin: 0.45rem 0 0;
+  color: #5d6b7f;
+  font-size: 0.95rem;
+}
+
+.daily-report-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid #e3e7ef;
+}
+
+.daily-report-filter {
+  display: inline-grid;
+  grid-template-columns: auto minmax(7rem, 9rem) minmax(10rem, 12rem) auto minmax(10rem, 12rem);
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.35rem;
+  border: 1px solid #c6d3e2;
+  border-radius: 0.5rem;
+  background: #f6f9ff;
+}
+
+.daily-report-filter label {
+  color: #4c5d75;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.daily-report-filter select,
+.daily-report-filter input {
+  min-height: 2.35rem;
+  width: 100%;
+  padding: 0 0.6rem;
+  border: 1px solid #c6d3e2;
+  border-radius: 0.45rem;
+  background: #ffffff;
+  color: #253a52;
+  font: inherit;
+}
+
+.daily-report-calendar-input {
+  min-height: 2.35rem;
+  width: 100%;
+  padding: 0 0.6rem;
+  border: 1px solid #c6d3e2;
+  border-radius: 0.45rem;
+  background: #ffffff;
+  color: #253a52;
+  font: inherit;
+}
+
+.daily-report-filter select:focus,
+.daily-report-filter input:focus {
+  border-color: #2ea3ff;
+  outline: 2px solid rgba(46, 163, 255, 0.2);
+}
+
+.daily-report-calendar-input:focus {
+  border-color: #2ea3ff;
+  outline: 2px solid rgba(46, 163, 255, 0.2);
+}
+
+.daily-report-calendar-popper {
+  z-index: 70;
+}
+
+#daily-report-datepicker-portal {
+  position: relative;
+  z-index: 80;
+}
+
+.daily-report-calendar {
+  border: 1px solid #b5cbe4 !important;
+  border-radius: 0.8rem !important;
+  box-shadow: 0 18px 38px rgba(20, 54, 94, 0.24);
+  overflow: hidden;
+  background: linear-gradient(180deg, #f2f8ff 0%, #ffffff 30%);
+}
+
+.daily-report-calendar .react-datepicker__header {
+  border-bottom: 1px solid #d5e3f4;
+  background: linear-gradient(120deg, #dff0ff 0%, #eef7ff 55%, #ffffff 100%);
+}
+
+.daily-report-calendar .react-datepicker__current-month,
+.daily-report-calendar .react-datepicker-time__header,
+.daily-report-calendar .react-datepicker-year-header {
+  color: #1d3550;
+  font-weight: 700;
+}
+
+.daily-report-calendar .react-datepicker__day,
+.daily-report-calendar .react-datepicker__day-name,
+.daily-report-calendar .react-datepicker__time-name {
+  width: 2rem;
+  line-height: 2rem;
+}
+
+.daily-report-calendar .react-datepicker__day:hover,
+.daily-report-calendar .react-datepicker__month-text:hover,
+.daily-report-calendar .react-datepicker__quarter-text:hover,
+.daily-report-calendar .react-datepicker__year-text:hover {
+  border-radius: 0.45rem;
+  background-color: #dff0ff;
+  color: #14385f;
+}
+
+.daily-report-calendar .react-datepicker__day--selected,
+.daily-report-calendar .react-datepicker__day--keyboard-selected,
+.daily-report-calendar .react-datepicker__month-text--selected,
+.daily-report-calendar .react-datepicker__month-text--keyboard-selected,
+.daily-report-calendar .react-datepicker__quarter-text--selected,
+.daily-report-calendar .react-datepicker__quarter-text--keyboard-selected,
+.daily-report-calendar .react-datepicker__year-text--selected,
+.daily-report-calendar .react-datepicker__year-text--keyboard-selected {
+  border-radius: 0.45rem;
+  background-color: #2493ee;
+  color: #ffffff;
+}
+
+.daily-report-add-button {
+  min-height: 2.4rem;
+  padding: 0 0.9rem;
+  border: 1px solid #1f6fb8;
+  border-radius: 0.5rem;
+  background: #2ea3ff;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.daily-report-add-button:hover {
+  background: #178eea;
+}
+
+.daily-report-feedback,
+.daily-report-list {
+  padding: 1.25rem;
+}
+
+.daily-report-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.daily-report-list h2 {
+  margin: 0 0 0.35rem;
+  color: #243447;
+  font-size: 1.05rem;
+}
+
+.daily-report-sub {
+  margin: 0 0 0.8rem;
+  color: #607088;
+  font-size: 0.88rem;
+}
+
+.daily-report-rendered-content p {
+  margin: 0 0 0.45rem;
+}
+
+.daily-report-rendered-content p:last-child {
+  margin-bottom: 0;
+}
+
+.daily-report-rendered-content ul,
+.daily-report-rendered-content ol {
+  margin: 0.2rem 0 0.45rem 1.1rem;
+  padding: 0;
+}
+
+.daily-report-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.25rem;
+}
+
+.daily-report-empty-cell {
+  text-align: center;
+  color: #607088;
+  font-size: 0.88rem;
+  padding-block: 1.1rem;
+}
+
+.daily-report-row-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.daily-report-row-view,
+.daily-report-row-edit {
+  min-height: 1.9rem;
+  padding: 0 0.55rem;
+  border: 1px solid #bcd3eb;
+  border-radius: 0.4rem;
+  background: #f3f9ff;
+  color: #2b4f75;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.daily-report-row-edit {
+  background: #eef7ff;
+  border-color: #a9cae7;
+}
+
+.daily-report-row-view:hover,
+.daily-report-row-edit:hover {
+  background: #dff0ff;
+}
+
+.daily-report-list th,
+.daily-report-list td {
+  padding: 0.65rem 0.45rem;
+  border-bottom: 1px solid #e8edf4;
+  text-align: left;
+  color: #203248;
+  font-size: 0.9rem;
+  vertical-align: top;
+}
+
+.daily-report-list th {
+  color: #5d6b7f;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.daily-report-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 0.65rem;
+  background: rgba(12, 32, 61, 0.35);
+}
+
+.daily-report-modal {
+  width: min(100%, 64rem);
+  min-height: min(86svh, 46rem);
+  max-height: 86svh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d5d8dd;
+  border-radius: 0.8rem;
+  background: #f3f5f8;
+  box-shadow: 0 24px 46px rgba(12, 32, 61, 0.25);
+  overflow: hidden;
+}
+
+.daily-report-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid #e3e7ef;
+  background: linear-gradient(120deg, #e8f1ff 0%, #f4f8ff 45%, #ffffff 100%);
+}
+
+.daily-report-modal-head h2 {
+  margin: 0;
+  color: #243447;
+  font-size: 1.05rem;
+}
+
+.daily-report-modal-close {
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  border: 1px solid #d1d8e4;
+  border-radius: 0.45rem;
+  background: #ffffff;
+  color: #4b5b72;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.daily-report-modal-form {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.daily-report-doc-meta {
+  display: grid;
+  grid-template-columns: minmax(14rem, 20rem) minmax(10rem, 14rem);
+  align-items: end;
+  justify-content: space-between;
+  gap: 0.65rem;
+  padding: 0.25rem 0.4rem 0.4rem;
+}
+
+.daily-report-doc-meta-field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.daily-report-modal-form label {
+  color: #243447;
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.daily-report-modal-form input,
+.daily-report-modal-form textarea,
+.daily-report-modal-form select {
+  width: 100%;
+  min-height: 2.35rem;
+  padding: 0.55rem 0.6rem;
+  border: 1px solid #c6d3e2;
+  border-radius: 0.45rem;
+  background: #f9fbff;
+  color: #132236;
+  font: inherit;
+  resize: vertical;
+}
+
+.daily-report-modal-form input:focus,
+.daily-report-modal-form textarea:focus,
+.daily-report-modal-form select:focus {
+  border-color: #2ea3ff;
+  outline: 2px solid rgba(46, 163, 255, 0.2);
+}
+
+.daily-report-save-date {
+  margin: 0;
+  padding: 0.5rem 0.6rem;
+  min-height: 2.35rem;
+  border: 1px solid #c6d3e2;
+  border-radius: 0.45rem;
+  background: #f9fbff;
+  color: #334a64;
+  font-size: 0.9rem;
+}
+
+.daily-report-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #c9d7e8;
+  border-radius: 0.35rem;
+  background: #f2f6fb;
+}
+
+.daily-report-toolbar-group {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding-right: 0.55rem;
+  border-right: 1px solid #d3dfed;
+}
+
+.daily-report-toolbar-group:last-child {
+  border-right: 0;
+}
+
+.daily-report-toolbar-caption {
+  color: #526882;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.daily-report-toolbar-group select {
+  min-height: 1.9rem;
+  border: 1px solid #ced8e8;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #30435a;
+  padding: 0 0.45rem;
+  font: inherit;
+}
+
+.daily-report-editor-toolbar button {
+  min-height: 1.9rem;
+  padding: 0 0.55rem;
+  border: 1px solid #ced8e8;
+  border-radius: 0.25rem;
+  background: #ffffff;
+  color: #30435a;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.daily-report-editor-toolbar button:hover {
+  background: #ebf3ff;
+}
+
+.daily-report-color-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #4e5f77;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.daily-report-color-label input {
+  min-height: 0;
+  width: 1.6rem;
+  height: 1.6rem;
+  padding: 0;
+  border-radius: 0.3rem;
+  border: 1px solid #ccd6e5;
+  background: transparent;
+  cursor: pointer;
+}
+
+.daily-report-template-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.daily-report-template-row button {
+  min-height: 2rem;
+  padding: 0 0.65rem;
+  border: 1px solid #c3d4ea;
+  border-radius: 0.45rem;
+  background: #ffffff;
+  color: #2f455f;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.daily-report-template-row button:hover {
+  background: #eef6ff;
+}
+
+.daily-report-workspace {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.75rem;
+  border: 1px solid #d7dfe9;
+  border-radius: 0.35rem;
+  background: #e6e8eb;
+}
+
+.daily-report-page {
+  width: min(100%, 44rem);
+  min-height: 100%;
+  margin: 0 auto;
+  border: 1px solid #cfd7e2;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(18, 41, 69, 0.12);
+}
+
+.daily-report-editor {
+  min-height: 34rem;
+  padding: 1.5rem 1.7rem;
+  color: #1a2d44;
+  line-height: 1.6;
+  font-family: Calibri, 'Segoe UI', Arial, sans-serif;
+  font-size: 1rem;
+}
+
+.daily-report-editor:focus {
+  outline: 0;
+}
+
+.daily-report-editor:empty::before {
+  content: 'Write today\'s report like a document...';
+  color: #8b97ab;
+}
+
+.daily-report-editor-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid #dbe5f2;
+  border-radius: 0.45rem;
+  background: #f8fbff;
+  color: #607088;
+  font-size: 0.79rem;
+}
+
+.daily-report-modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55rem;
+  margin-top: 0.25rem;
+}
+
+.daily-report-modal-actions button {
+  min-height: 2.35rem;
+  min-width: 6.4rem;
+  border: 1px solid #1f6fb8;
+  border-radius: 0.45rem;
+  background: #2ea3ff;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.daily-report-modal-actions button:hover {
+  background: #178eea;
+}
+
+.daily-report-modal-cancel {
+  border-color: #d1d8e4 !important;
+  background: #ffffff !important;
+  color: #4b5b72 !important;
+}
+
 .team-mgmt-list table {
   width: 100%;
   border-collapse: collapse;
@@ -1202,6 +1779,10 @@
   background: #178eea;
 }
 
+body.daily-report-picker-open {
+  overflow: hidden;
+}
+
 @media (max-width: 640px) {
   .tab-header {
     gap: 0.5rem;
@@ -1229,6 +1810,39 @@
 
   .team-mgmt-head {
     grid-template-columns: 1fr;
+  }
+
+  .daily-report-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .daily-report-add-button {
+    width: 100%;
+  }
+
+  .daily-report-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .daily-report-filter {
+    width: 100%;
+    grid-template-columns: 1fr;
+  }
+
+  .daily-report-filter label {
+    font-size: 0.78rem;
+  }
+
+  .daily-report-toolbar-group {
+    border-right: 0;
+    padding-right: 0;
+  }
+
+  .daily-report-editor-status {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .team-mgmt-modal-grid {
@@ -1269,5 +1883,368 @@
     gap: 0.75rem;
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+/* 2026 Visual Refresh */
+:root {
+  --ui-bg: #f3f6fb;
+  --ui-surface: rgba(255, 255, 255, 0.84);
+  --ui-surface-solid: #ffffff;
+  --ui-border: #d6dfeb;
+  --ui-text: #1b2a40;
+  --ui-muted: #5f7189;
+  --ui-primary: #0ea5e9;
+  --ui-primary-strong: #0284c7;
+  --ui-focus: rgba(14, 165, 233, 0.24);
+  --ui-shadow-soft: 0 18px 40px rgba(17, 40, 73, 0.08);
+  --ui-shadow-pop: 0 28px 56px rgba(17, 40, 73, 0.14);
+  --ui-radius: 16px;
+}
+
+body {
+  color: var(--ui-text);
+  background:
+    radial-gradient(circle at 10% -15%, rgba(14, 165, 233, 0.12), transparent 36%),
+    radial-gradient(circle at 92% 18%, rgba(6, 182, 212, 0.1), transparent 30%),
+    linear-gradient(180deg, #f8fbff 0%, #eef3f9 100%);
+  font-family: 'Manrope', 'Segoe UI Variable', 'Trebuchet MS', sans-serif;
+}
+
+.dashboard-shell,
+.tab-content,
+.login-screen {
+  background: transparent;
+}
+
+.tab-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--ui-border);
+  background: rgba(248, 252, 255, 0.82);
+}
+
+.tab,
+.tab-dropdown-trigger {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: all 180ms ease;
+}
+
+.tab:hover,
+.tab-dropdown-trigger:hover {
+  border-color: #b9d8ea;
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.tab.is-active {
+  border-color: #9fd8f4;
+  border-bottom-color: #9fd8f4;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+  color: #075985;
+}
+
+.tab-dropdown-menu {
+  border: 1px solid #b8ddf0;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #42baf7 0%, #22acef 100%);
+  box-shadow: var(--ui-shadow-pop);
+}
+
+.route-panel,
+.user-mgmt,
+.daily-report,
+.ecommerce-hero,
+.ecommerce-panel,
+.ecommerce-pipeline-card,
+.team-mgmt-card,
+.team-mgmt-list,
+.login-panel {
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  background: var(--ui-surface);
+  box-shadow: var(--ui-shadow-soft);
+  backdrop-filter: blur(7px);
+}
+
+.route-title,
+.user-mgmt-head h1,
+.daily-report-head h1,
+.ecommerce-dashboard-head h1,
+.login-title,
+.team-mgmt-head h1 {
+  font-family: 'Sora', 'Manrope', 'Segoe UI Variable', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.user-mgmt-head,
+.daily-report-head,
+.daily-report-toolbar,
+.user-mgmt-modal-head,
+.team-mgmt-modal-head,
+.daily-report-modal-head {
+  border-bottom: 1px solid #dde7f2;
+}
+
+.user-mgmt-head p,
+.daily-report-note,
+.route-subtitle,
+.login-subtitle,
+.user-mgmt-sub,
+.daily-report-sub,
+.team-mgmt-sub {
+  color: var(--ui-muted);
+}
+
+.user-mgmt-add-button,
+.team-mgmt-add-button,
+.daily-report-add-button,
+.login-button,
+.user-mgmt-modal-form button,
+.team-mgmt-form button,
+.daily-report-modal-actions button,
+.team-action-buttons button {
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: linear-gradient(180deg, #29b4f8 0%, #1197df 100%);
+  box-shadow: 0 10px 24px rgba(17, 149, 219, 0.24);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+}
+
+.user-mgmt-add-button:hover,
+.team-mgmt-add-button:hover,
+.daily-report-add-button:hover,
+.login-button:hover,
+.user-mgmt-modal-form button:hover,
+.team-mgmt-form button:hover,
+.daily-report-modal-actions button:hover,
+.team-action-buttons button:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #18a7ee 0%, #0b88cd 100%);
+  box-shadow: 0 14px 28px rgba(12, 125, 184, 0.28);
+}
+
+.delete-account-button,
+.team-action-danger {
+  border-radius: 10px;
+}
+
+.user-mgmt-modal-cancel,
+.team-action-secondary,
+.daily-report-modal-cancel,
+.delete-account-button {
+  box-shadow: none !important;
+}
+
+.user-mgmt-modal-form input,
+.user-mgmt-modal-form select,
+.team-mgmt-form input,
+.team-mgmt-form select,
+.team-edit-input,
+.team-edit-select,
+.daily-report-filter select,
+.daily-report-calendar-input,
+.daily-report-modal-form input,
+.daily-report-modal-form select,
+.daily-report-modal-form textarea,
+.login-input {
+  border: 1px solid #cfe0ee;
+  border-radius: 11px;
+  background: #f9fcff;
+  box-shadow: inset 0 1px 2px rgba(17, 40, 73, 0.05);
+}
+
+.user-mgmt-modal-form input:focus,
+.user-mgmt-modal-form select:focus,
+.team-mgmt-form input:focus,
+.team-mgmt-form select:focus,
+.team-edit-input:focus,
+.team-edit-select:focus,
+.daily-report-filter select:focus,
+.daily-report-calendar-input:focus,
+.daily-report-modal-form input:focus,
+.daily-report-modal-form select:focus,
+.daily-report-modal-form textarea:focus,
+.login-input:focus {
+  border-color: #7bcaf3;
+  outline: 3px solid var(--ui-focus);
+}
+
+.user-mgmt-list table,
+.daily-report-list table,
+.team-mgmt-list table {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.user-mgmt-list th,
+.daily-report-list th,
+.team-mgmt-list th {
+  background: #f2f8ff;
+  color: #4f6480;
+}
+
+.user-mgmt-list td,
+.daily-report-list td,
+.team-mgmt-list td {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.user-mgmt-list tbody tr:hover td,
+.daily-report-list tbody tr:hover td,
+.team-mgmt-list tbody tr:hover td {
+  background: #eef8ff;
+}
+
+.user-mgmt-modal-backdrop,
+.team-mgmt-modal-backdrop,
+.daily-report-modal-backdrop {
+  backdrop-filter: blur(6px);
+  background: rgba(17, 40, 73, 0.36);
+}
+
+.user-mgmt-modal,
+.team-mgmt-modal,
+.daily-report-modal {
+  border: 1px solid #d6e3ef;
+  border-radius: 18px;
+  box-shadow: var(--ui-shadow-pop);
+}
+
+.daily-report-workspace {
+  border-radius: 12px;
+  background: #e7edf4;
+}
+
+.daily-report-page {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.daily-report-editor {
+  font-family: 'Manrope', 'Segoe UI Variable', 'Trebuchet MS', sans-serif;
+}
+
+@keyframes surface-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes row-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.route-panel,
+.user-mgmt,
+.daily-report,
+.ecommerce-dashboard,
+.login-panel {
+  animation: surface-rise 380ms ease both;
+}
+
+.user-mgmt-list tbody tr,
+.team-mgmt-list tbody tr,
+.daily-report-list tbody tr {
+  animation: row-fade 300ms ease both;
+}
+
+.user-mgmt-list tbody tr:nth-child(1),
+.team-mgmt-list tbody tr:nth-child(1),
+.daily-report-list tbody tr:nth-child(1) { animation-delay: 40ms; }
+.user-mgmt-list tbody tr:nth-child(2),
+.team-mgmt-list tbody tr:nth-child(2),
+.daily-report-list tbody tr:nth-child(2) { animation-delay: 80ms; }
+.user-mgmt-list tbody tr:nth-child(3),
+.team-mgmt-list tbody tr:nth-child(3),
+.daily-report-list tbody tr:nth-child(3) { animation-delay: 120ms; }
+.user-mgmt-list tbody tr:nth-child(4),
+.team-mgmt-list tbody tr:nth-child(4),
+.daily-report-list tbody tr:nth-child(4) { animation-delay: 160ms; }
+.user-mgmt-list tbody tr:nth-child(5),
+.team-mgmt-list tbody tr:nth-child(5),
+.daily-report-list tbody tr:nth-child(5) { animation-delay: 200ms; }
+
+.daily-report-trendy-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  min-height: 2.35rem;
+  padding: 0 2.15rem 0 0.75rem;
+  border: 1px solid #badcf0;
+  border-radius: 12px;
+  background-color: #f8fcff;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.25 6 8l4-3.75' fill='none' stroke='%23067fb6' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #ffffff 0%, #f2f9ff 100%);
+  background-repeat: no-repeat, no-repeat;
+  background-size: 0.8rem 0.8rem, 100% 100%;
+  background-position: right 0.75rem center, center;
+  color: #1e3652;
+  font-weight: 600;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 1px 2px rgba(17, 40, 73, 0.06);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+.daily-report-trendy-select:hover {
+  border-color: #93cae8;
+  background-color: #f4faff;
+}
+
+.daily-report-trendy-select:focus {
+  border-color: #65bde6;
+  outline: 3px solid rgba(14, 165, 233, 0.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 0 0 2px rgba(255, 255, 255, 0.72),
+    0 0 0 5px rgba(14, 165, 233, 0.14);
+}
+
+.daily-report-trendy-select:disabled {
+  opacity: 0.62;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-panel,
+  .user-mgmt,
+  .daily-report,
+  .ecommerce-dashboard,
+  .login-panel,
+  .user-mgmt-list tbody tr,
+  .team-mgmt-list tbody tr,
+  .daily-report-list tbody tr {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .tab-header {
+    backdrop-filter: none;
+    background: rgba(248, 252, 255, 0.96);
+  }
+
+  .user-mgmt,
+  .daily-report,
+  .route-panel,
+  .login-panel {
+    border-radius: 12px;
   }
 }

@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react'
 import { APP_ROUTES } from './appRoutes'
-import TeamManagementPage from '../User/TeamManagementPage'
-import UserManagementPage from '../User/UserManagementPage'
+import DailyReportPage from '../Page/Team/DailyReportPage'
+import TeamManagementPage from '../Page/Team/TeamManagementPage'
+import UserManagementPage from '../Page/User/UserManagementPage'
 import EcommerceDashboardPage from '../components/EcommerceDashboardPage'
 import RoutePlaceholder from '../components/RoutePlaceholder'
 
@@ -25,7 +26,7 @@ export const DASHBOARD_ROUTE_CONFIG: DashboardRouteConfig[] = [
   },
   {
     path: APP_ROUTES.teamDailyReport,
-    element: <RoutePlaceholder title="Daily report" />,
+    element: <DailyReportPage />,
   },
   {
     path: APP_ROUTES.teamWorkMark,

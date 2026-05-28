@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { signIn, isAuthenticated } from '../auth/session'
+import { fetchCurrentSession, signInRequest } from '../api/auth'
+import { ApiError } from '../api/http'
 import { APP_ROUTES } from '../routes/appRoutes'
-
-const MANAGER_EMAIL = 'manager@bluesky.com'
-const MANAGER_PASSWORD = '1234567890'
 
 function LoginWindow() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -18,21 +17,50 @@ function LoginWindow() {
     APP_ROUTES.dashboard
 
   useEffect(() => {
-    if (isAuthenticated()) {
-      navigate(APP_ROUTES.dashboard, { replace: true })
+    let isMounted = true
+
+    async function hydrateSession() {
+      try {
+        await fetchCurrentSession()
+        if (isMounted) {
+          navigate(APP_ROUTES.dashboard, { replace: true })
+        }
+      } catch {
+        if (!isMounted) {
+          return
+        }
+
+        setErrorMessage('')
+      }
+    }
+
+    void hydrateSession()
+
+    return () => {
+      isMounted = false
     }
   }, [navigate])
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setErrorMessage('')
+    setIsSubmitting(true)
 
-    if (email.trim() === MANAGER_EMAIL && password === MANAGER_PASSWORD) {
-      signIn()
+    try {
+      await signInRequest({
+        email: email.trim(),
+        password,
+      })
       navigate(nextPath, { replace: true })
-      return
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 401) {
+        setErrorMessage('Invalid credentials. Please try again.')
+      } else {
+        setErrorMessage('Unable to sign in through the backend API.')
+      }
+    } finally {
+      setIsSubmitting(false)
     }
-
-    setErrorMessage('Invalid credentials. Please sign in with the manager account.')
   }
 
   return (
@@ -40,9 +68,6 @@ function LoginWindow() {
       <section className="login-panel" aria-label="Login window">
         <h1 className="login-title">Sign in</h1>
         <p className="login-subtitle">Use your account credentials to continue.</p>
-        <p className="login-hint">
-          Manager account: <strong>manager@bluesky.com</strong> / <strong>1234567890</strong>
-        </p>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <label className="login-label" htmlFor="email">
@@ -75,8 +100,8 @@ function LoginWindow() {
 
           {errorMessage && <p className="form-message is-error">{errorMessage}</p>}
 
-          <button className="login-button" type="submit">
-            Sign in
+          <button className="login-button" type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Signing in...' : 'Sign in'}
           </button>
         </form>
       </section>
