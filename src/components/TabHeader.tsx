@@ -33,15 +33,21 @@ function TabHeader() {
   }, [])
 
   return (
-    <header className="tab-header" aria-label="Dashboard tabs">
+    <aside className="tab-header" aria-label="Dashboard tabs">
       <span className="tab-brand" aria-label="Bluesky brand left">
         bluesky
       </span>
 
       <nav className="tab-nav" aria-label="Dashboard navigation" ref={navRef}>
-        {TAB_MENUS.map((menu) => (
-          menu.id === 'dashboard' ? (
-            <NavLink key={menu.id} className={({ isActive }) => (isActive ? 'tab is-active' : 'tab')} to={menu.items[0].to}>
+        {TAB_MENUS.map((menu) => {
+          const firstItem = menu.items[0]
+
+          return menu.items.length === 1 && firstItem ? (
+            <NavLink
+              key={menu.id}
+              className={({ isActive }) => (isActive ? 'tab is-active' : 'tab')}
+              to={firstItem.to}
+            >
               {menu.triggerLabel}
             </NavLink>
           ) : (
@@ -68,13 +74,9 @@ function TabHeader() {
               )}
             </div>
           )
-        ))}
+        })}
       </nav>
-
-      <span className="tab-brand tab-brand-right" aria-label="Bluesky brand right">
-        bluesky
-      </span>
-    </header>
+    </aside>
   )
 }
 

@@ -23,6 +23,25 @@ import {
 } from './dailyReportUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 
+function normalizeWebUrl(value: string): string | null {
+  const trimmedValue = value.trim()
+  if (!trimmedValue) {
+    return null
+  }
+
+  const candidate = /^https?:\/\//i.test(trimmedValue) ? trimmedValue : `https://${trimmedValue}`
+
+  try {
+    const parsed = new URL(candidate)
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+      return null
+    }
+    return parsed.toString()
+  } catch {
+    return null
+  }
+}
+
 function DailyReportPage() {
   const todayKey = getTodayDateKey()
   const todayDate = parseDateKey(todayKey)
@@ -68,8 +87,9 @@ function DailyReportPage() {
 
         setReports(fetchedReports)
         setTeamOptions(fetchedTeams)
-        if (fetchedTeams.length > 0) {
-          setSelectedTeamId(fetchedTeams[0].id)
+        const firstTeam = fetchedTeams[0]
+        if (firstTeam) {
+          setSelectedTeamId(firstTeam.id)
         }
       } catch {
         if (!isMounted) {
@@ -211,8 +231,9 @@ function DailyReportPage() {
     setTextColor('#1a2d44')
     setHighlightColor('#fff59d')
     setEditorUpdatedAt('')
-    if (teamOptions.length > 0) {
-      setSelectedTeamId(teamOptions[0].id)
+    const firstTeam = teamOptions[0]
+    if (firstTeam) {
+      setSelectedTeamId(firstTeam.id)
     } else {
       setSelectedTeamId('')
     }
@@ -266,6 +287,45 @@ function DailyReportPage() {
     editorRef.current.focus()
     document.execCommand(command, false, value)
     syncEditorState()
+  }
+
+  function handleInsertLink() {
+    const enteredUrl = window.prompt('Enter URL to open (example: https://example.com)')
+    if (enteredUrl === null) {
+      return
+    }
+
+    const normalizedUrl = normalizeWebUrl(enteredUrl)
+    if (!normalizedUrl) {
+      setErrorMessage('Please enter a valid http or https URL.')
+      setSuccessMessage('')
+      return
+    }
+
+    applyEditorCommand('createLink', normalizedUrl)
+    setSuccessMessage('Link inserted. Click the link in the editor to open the page.')
+    setErrorMessage('')
+  }
+
+  function handleEditorClick(event: React.MouseEvent<HTMLDivElement>) {
+    const target = event.target as HTMLElement
+    const linkElement = target.closest('a')
+    if (!linkElement) {
+      return
+    }
+
+    const href = linkElement.getAttribute('href') ?? ''
+    const normalizedUrl = normalizeWebUrl(href)
+
+    event.preventDefault()
+
+    if (!normalizedUrl) {
+      setErrorMessage('This link is invalid and cannot be opened.')
+      setSuccessMessage('')
+      return
+    }
+
+    window.open(normalizedUrl, '_blank', 'noopener,noreferrer')
   }
 
   function handleEditorInput(event: React.FormEvent<HTMLDivElement>) {
@@ -443,12 +503,14 @@ function DailyReportPage() {
         lockedTeamName={lockedTeamName}
         onSelectedTeamIdChange={setSelectedTeamId}
         applyEditorCommand={applyEditorCommand}
+        onInsertLink={handleInsertLink}
         textColor={textColor}
         onTextColorChange={setTextColor}
         highlightColor={highlightColor}
         onHighlightColorChange={setHighlightColor}
         editorRef={editorRef}
         onEditorInput={handleEditorInput}
+        onEditorClick={handleEditorClick}
         editorWordCount={editorWordCount}
         editorCharacterCount={editorCharacterCount}
         editorUpdatedAt={editorUpdatedAt}

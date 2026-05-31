@@ -3,6 +3,8 @@ import { APP_ROUTES } from './appRoutes'
 import DailyReportPage from '../Page/Team/DailyReportPage'
 import TeamManagementPage from '../Page/Team/TeamManagementPage'
 import UserManagementPage from '../Page/User/UserManagementPage'
+import AssignmentPage from '../Page/Assignment/AssignmentPage'
+import ReportPage from '../Page/Report/ReportPage'
 import EcommerceDashboardPage from '../components/EcommerceDashboardPage'
 import RoutePlaceholder from '../components/RoutePlaceholder'
 
@@ -23,6 +25,14 @@ export const DASHBOARD_ROUTE_CONFIG: DashboardRouteConfig[] = [
   {
     path: APP_ROUTES.teamManagement,
     element: <TeamManagementPage />,
+  },
+  {
+    path: APP_ROUTES.assignment,
+    element: <AssignmentPage />,
+  },
+  {
+    path: APP_ROUTES.report,
+    element: <ReportPage />,
   },
   {
     path: APP_ROUTES.teamDailyReport,

@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { fetchCurrentSession } from '../api/auth'
 import { ApiError } from '../api/http'
 import { APP_ROUTES } from '../routes/appRoutes'
+import { LoadingSpinner } from './common/LoadingSpinner'
 
 type RequireAuthProps = {
   children: ReactElement
@@ -32,6 +33,12 @@ function RequireAuth({ children }: RequireAuthProps) {
           return
         }
 
+        // Keep routes viewable during local frontend development when backend auth is not ready.
+        if (import.meta.env.DEV) {
+          setStatus('authenticated')
+          return
+        }
+
         setStatus('unauthenticated')
       }
     }
@@ -44,14 +51,7 @@ function RequireAuth({ children }: RequireAuthProps) {
   }, [])
 
   if (status === 'loading') {
-    return (
-      <main className="login-screen">
-        <section className="login-panel" aria-label="Checking session">
-          <h1 className="login-title">Checking session</h1>
-          <p className="login-subtitle">Connecting to the authentication service.</p>
-        </section>
-      </main>
-    )
+    return <LoadingSpinner fullscreen label="Checking session" hint="Connecting to the authentication service." />
   }
 
   if (status === 'unauthenticated') {

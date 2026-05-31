@@ -15,38 +15,26 @@ export type TabMenu = {
 export const TAB_MENUS: TabMenu[] = [
   {
     id: 'dashboard',
-    triggerLabel: 'Dashboard',
-    ariaLabel: 'Dashboard options',
-    items: [{ label: 'Dashboard', to: APP_ROUTES.dashboard }],
+    triggerLabel: 'User',
+    ariaLabel: 'User options',
+    items: [{ label: 'User', to: APP_ROUTES.userManagement }],
   },
   {
     id: 'user',
-    triggerLabel: 'User Management',
-    ariaLabel: 'User Management options',
-    items: [
-      { label: 'User Management', to: APP_ROUTES.userManagement },
-      { label: 'Team Management', to: APP_ROUTES.teamManagement },
-    ],
+    triggerLabel: 'Team',
+    ariaLabel: 'Team options',
+    items: [{ label: 'Team', to: APP_ROUTES.teamManagement }],
   },
   {
     id: 'team',
-    triggerLabel: 'Team Management',
-    ariaLabel: 'Team Management options',
-    items: [
-      { label: 'Dashboard', to: APP_ROUTES.teamDashboard },
-      { label: 'Daily report', to: APP_ROUTES.teamDailyReport },
-      { label: 'Work Mark', to: APP_ROUTES.teamWorkMark },
-    ],
+    triggerLabel: 'Assignment',
+    ariaLabel: 'Assignment options',
+    items: [{ label: 'Assignment', to: APP_ROUTES.assignment }],
   },
   {
     id: 'remote',
-    triggerLabel: 'Remote Job',
-    ariaLabel: 'Remote Job options',
-    items: [
-      { label: 'Dashboard', to: APP_ROUTES.remoteDashboard },
-      { label: 'Bid Management', to: APP_ROUTES.remoteBidManagement },
-      { label: 'Call Management', to: APP_ROUTES.remoteCallManagement },
-      { label: 'Profile management', to: APP_ROUTES.remoteProfileManagement },
-    ],
+    triggerLabel: 'Report',
+    ariaLabel: 'Report options',
+    items: [{ label: 'Report', to: APP_ROUTES.report }],
   },
 ]

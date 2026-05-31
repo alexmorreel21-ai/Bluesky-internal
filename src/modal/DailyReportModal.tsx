@@ -1,4 +1,4 @@
-import type { FormEvent, FormEventHandler, MutableRefObject } from 'react'
+import type { FormEvent, FormEventHandler, MouseEventHandler, MutableRefObject } from 'react'
 import type { DailyReportTeamOption } from '../api/dailyReports'
 
 export type DailyReportModalMode = 'create' | 'edit' | 'view'
@@ -14,12 +14,14 @@ type DailyReportModalProps = {
   lockedTeamName: string
   onSelectedTeamIdChange: (value: string) => void
   applyEditorCommand: (command: string, value?: string) => void
+  onInsertLink: () => void
   textColor: string
   onTextColorChange: (value: string) => void
   highlightColor: string
   onHighlightColorChange: (value: string) => void
   editorRef: MutableRefObject<HTMLDivElement | null>
   onEditorInput: (event: FormEvent<HTMLDivElement>) => void
+  onEditorClick: MouseEventHandler<HTMLDivElement>
   editorWordCount: number
   editorCharacterCount: number
   editorUpdatedAt: string
@@ -36,12 +38,14 @@ function DailyReportModal({
   lockedTeamName,
   onSelectedTeamIdChange,
   applyEditorCommand,
+  onInsertLink,
   textColor,
   onTextColorChange,
   highlightColor,
   onHighlightColorChange,
   editorRef,
   onEditorInput,
+  onEditorClick,
   editorWordCount,
   editorCharacterCount,
   editorUpdatedAt,
@@ -193,6 +197,9 @@ function DailyReportModal({
 
               <div className="daily-report-toolbar-group">
                 <span className="daily-report-toolbar-caption">Editing</span>
+                <button type="button" onClick={onInsertLink}>
+                  Insert Link
+                </button>
                 <button type="button" onClick={() => applyEditorCommand('undo')}>
                   Undo
                 </button>
@@ -216,6 +223,7 @@ function DailyReportModal({
                 aria-multiline="true"
                 aria-label="Daily report document editor"
                 onInput={onEditorInput}
+                onClick={onEditorClick}
                 suppressContentEditableWarning
               />
             </div>

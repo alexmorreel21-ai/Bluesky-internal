@@ -5,8 +5,8 @@ export function getTodayDateKey(): string {
 }
 
 export function parseDateKey(dateKey: string): Date {
-  const [year, month, day] = dateKey.split('-').map(Number)
-  return new Date(year, (month || 1) - 1, day || 1)
+  const [year = 1970, month = 1, day = 1] = dateKey.split('-').map(Number)
+  return new Date(year, month - 1, day)
 }
 
 export function formatDateKey(date: Date): string {

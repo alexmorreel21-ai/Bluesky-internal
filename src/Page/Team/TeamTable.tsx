@@ -1,4 +1,5 @@
 import type { TeamRecord, UserRecord } from '../User/Table'
+import { LoadingSpinner } from '../../components/common/LoadingSpinner'
 
 type TeamTableProps = {
   teams: TeamRecord[]
@@ -42,7 +43,7 @@ function TeamTable({
         {leaderOptions.length}
       </p>
       {isLoading ? (
-        <p>Loading team data...</p>
+        <LoadingSpinner label="Loading team data" hint="Preparing teams, leaders, and member assignments." />
       ) : teams.length === 0 ? (
         <p>No teams created yet.</p>
       ) : (

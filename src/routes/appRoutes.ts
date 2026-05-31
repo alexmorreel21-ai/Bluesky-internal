@@ -3,6 +3,8 @@ export const APP_ROUTES = {
   dashboard: '/dashboard',
   userManagement: '/user-management',
   teamManagement: '/team-management',
+  assignment: '/assignment',
+  report: '/report',
   teamDailyReport: '/team-management/daily-report',
   teamWorkMark: '/team-management/work-mark',
   teamDashboard: '/team-management/dashboard',

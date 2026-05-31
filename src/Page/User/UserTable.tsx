@@ -1,4 +1,5 @@
 import type { ManagedUser } from './Table'
+import { LoadingSpinner } from '../../components/common/LoadingSpinner'
 
 type UserTableProps = {
   users: ManagedUser[]
@@ -13,7 +14,7 @@ function UserTable({ users, isLoading, invitedCount, onDelete }: UserTableProps)
       <h2>Registered Accounts</h2>
       <p className="user-mgmt-sub">Pending invite accounts: {invitedCount}</p>
       {isLoading ? (
-        <p>Loading users...</p>
+        <LoadingSpinner label="Loading users" hint="Fetching account records and permissions." />
       ) : (
         <table>
           <thead>

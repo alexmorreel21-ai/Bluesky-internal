@@ -51,8 +51,9 @@ function TeamManagementPage() {
         setUsers(fetchedUsers)
         setTeams(fetchedTeams)
 
-        if (fetchedTeams.length > 0) {
-          setSelectedTeamId(fetchedTeams[0].id)
+        const firstTeam = fetchedTeams[0]
+        if (firstTeam) {
+          setSelectedTeamId(firstTeam.id)
         }
       } catch {
         if (!isMounted) {

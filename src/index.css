@@ -1,33 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  font-family:
-    "Manrope", "Sora", "Segoe UI Variable", "Trebuchet MS", sans-serif;
-  color: #1b2a40;
-  background: #f3f6fb;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+  color: #e2e8f0;
+  background: #0f172a;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 html,
 body,
 #root {
-  width: 100%;
   min-height: 100%;
 }
 
 body {
-  min-width: 320px;
   margin: 0;
-  overflow-x: hidden;
-}
-
-button,
-input,
-textarea {
-  letter-spacing: 0;
+  min-width: 320px;
+  background: #0f172a;
 }
