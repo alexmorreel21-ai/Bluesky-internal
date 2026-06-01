@@ -1,16 +1,33 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Badge } from '../common/Badge'
+import { useNavigate } from 'react-router-dom'
 import { EmptyState } from '../common/EmptyState'
 import { LoadingSpinner } from '../common/LoadingSpinner'
 import { Modal } from '../common/Modal'
 import { NewActionButton } from '../common/NewActionButton'
-import { Table } from '../common/Table'
-import { addTask, completeTask, deleteTask, getTaskStatistics, getTasks, getTeams } from '../../services/mockApi'
+import { addTask, getTaskStatistics, getTasks, getTeams } from '../../services/mockApi'
 import type { TaskWithDetails } from '../../types/task.types'
 import { useAuth } from '../../contexts/AuthContext'
+import { APP_ROUTES } from '../../routes/appRoutes'
+
+function toAvatarLabel(name: string): string {
+  const words = name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+
+  if (!words.length) {
+    return 'TM'
+  }
+
+  return words
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase() ?? '')
+    .join('')
+}
 
 export function AssignmentTab() {
   const { currentUser } = useAuth()
+  const navigate = useNavigate()
   const [tasks, setTasks] = useState<TaskWithDetails[]>([])
   const [teams, setTeams] = useState<{ id: string; name: string }[]>([])
   const [loading, setLoading] = useState(true)
@@ -47,7 +64,22 @@ export function AssignmentTab() {
     void load()
   }, [])
 
-  const statusVariant = useMemo(() => ({ 'in-progress': 'warning', completed: 'success' } as const), [])
+  const teamCards = useMemo(
+    () =>
+      teams.map((team) => {
+        const teamTasks = tasks.filter((task) => task.teamId === team.id)
+        const inProgressCount = teamTasks.filter((task) => task.status === 'in-progress').length
+        const completedCount = teamTasks.filter((task) => task.status === 'completed').length
+
+        return {
+          ...team,
+          tasks: teamTasks,
+          inProgressCount,
+          completedCount,
+        }
+      }),
+    [teams, tasks],
+  )
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -108,36 +140,48 @@ export function AssignmentTab() {
       <section className="min-h-[62vh]">
         {loading ? (
           <LoadingSpinner />
-        ) : tasks.length === 0 ? (
+        ) : teams.length === 0 ? (
           <EmptyState title="No assignments" message="Create your first assignment." />
         ) : (
-          <Table
-            data={tasks}
-            rowKey={(item) => item.id}
-            columns={[
-              { key: 'name', title: 'Task', render: (item) => item.name },
-              { key: 'team', title: 'Team', render: (item) => item.teamName },
-              { key: 'deadline', title: 'Deadline', render: (item) => item.deadline },
-              { key: 'objective', title: 'Objective', render: (item) => item.objective },
-              { key: 'status', title: 'Status', render: (item) => <Badge variant={statusVariant[item.status]}>{item.status}</Badge> },
-              {
-                key: 'actions',
-                title: 'Actions',
-                render: (item) => (
-                  <div className="flex gap-2">
-                    {item.status !== 'completed' ? (
-                      <button onClick={() => void completeTask(item.id).then(load)} className="text-sm text-emerald-600 hover:underline">
-                        Complete
-                      </button>
-                    ) : null}
-                    <button onClick={() => void deleteTask(item.id).then(load)} className="text-sm text-rose-600 hover:underline">
-                      Delete
-                    </button>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {teamCards.map((team) => (
+              <article
+                key={team.id}
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-sky-100 text-lg font-bold text-sky-700 dark:bg-sky-900/40 dark:text-sky-200">
+                    {toAvatarLabel(team.name)}
                   </div>
-                ),
-              },
-            ]}
-          />
+                  <h3 className="mt-3 text-lg font-semibold text-slate-800 dark:text-slate-100">{team.name}</h3>
+                </div>
+
+                <dl className="mt-4 grid grid-cols-3 gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-center dark:border-slate-700 dark:bg-slate-800/40">
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Total</dt>
+                    <dd className="mt-1 text-base font-semibold text-slate-800 dark:text-slate-100">{team.tasks.length}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">In Progress</dt>
+                    <dd className="mt-1 text-base font-semibold text-amber-600 dark:text-amber-300">{team.inProgressCount}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-[11px] uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Completed</dt>
+                    <dd className="mt-1 text-base font-semibold text-emerald-600 dark:text-emerald-300">{team.completedCount}</dd>
+                  </div>
+                </dl>
+
+                <div className="mt-4 flex justify-end">
+                  <button
+                    onClick={() => navigate(`${APP_ROUTES.assignmentTeamDetails}/${team.id}`)}
+                    className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1.5 text-sm font-semibold text-sky-700 transition hover:-translate-y-0.5 hover:bg-sky-100"
+                  >
+                    More
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
         )}
       </section>
 

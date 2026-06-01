@@ -25,8 +25,8 @@ function withDetails(teams: Team[]): TeamWithDetails[] {
 
     return {
       ...team,
-      leaderName: leader?.username ?? 'Unknown',
-      leaderRole: leader?.role ?? 'unknown',
+      leaderName: leader?.username ?? 'Unassigned',
+      leaderRole: leader?.role ?? 'unassigned',
       memberNames: members.map((item) => item.username),
     }
   })
@@ -73,7 +73,17 @@ export const updateTeam = async (id: string, updates: Partial<TeamInput>): Promi
       throw new Error('Team name already exists.')
     }
 
-    const updated: Team = { ...target, ...updates, updatedAt: now() }
+    const nextLeaderId = updates.leaderId ?? target.leaderId
+    const nextMemberIds =
+      updates.memberIds ?? target.memberIds.filter((memberId) => memberId !== nextLeaderId)
+
+    const updated: Team = {
+      ...target,
+      ...updates,
+      leaderId: nextLeaderId,
+      memberIds: nextMemberIds.filter((memberId) => memberId !== nextLeaderId),
+      updatedAt: now(),
+    }
     setTeamsRaw(teams.map((item) => (item.id === id ? updated : item)))
     return updated
   })
@@ -96,6 +106,10 @@ export const addMemberToTeam = async (teamId: string, memberId: string): Promise
     const target = teams.find((item) => item.id === teamId)
     if (!target) {
       throw new Error('Team not found.')
+    }
+
+    if (target.leaderId === memberId) {
+      throw new Error('Team leader cannot also be added as a member.')
     }
 
     if (target.memberIds.includes(memberId)) {

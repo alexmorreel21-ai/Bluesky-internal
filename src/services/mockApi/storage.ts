@@ -12,11 +12,47 @@ function makeSeedUsers(): User[] {
   const createdAt = now()
 
   return [
-    { id: 'user_admin', username: 'admin', email: 'admin@bluesky.com', password: 'admin123', role: 'admin', createdAt, updatedAt: createdAt },
+    { id: 'user_admin', username: 'admin', email: 'admin@bluesky.com', password: '1234567890', role: 'admin', createdAt, updatedAt: createdAt },
     { id: 'user_manager', username: 'manager', email: 'manager@bluesky.com', password: 'manager123', role: 'manager', createdAt, updatedAt: createdAt },
     { id: 'user_alice', username: 'alice', email: 'alice@bluesky.com', password: 'dev123', role: 'dev', createdAt, updatedAt: createdAt },
     { id: 'user_bob', username: 'bob', email: 'bob@bluesky.com', password: 'dev123', role: 'dev', createdAt, updatedAt: createdAt },
   ]
+}
+
+function ensureDefaultAdmin(users: User[]): User[] {
+  const createdAt = now()
+  const adminIndex = users.findIndex((user) => user.id === 'user_admin' || user.email.toLowerCase() === 'admin@bluesky.com')
+  const defaultAdmin: User = {
+    id: 'user_admin',
+    username: 'admin',
+    email: 'admin@bluesky.com',
+    password: '1234567890',
+    role: 'admin',
+    createdAt,
+    updatedAt: createdAt,
+  }
+
+  if (adminIndex === -1) {
+    return [defaultAdmin, ...users]
+  }
+
+  const currentAdmin = users[adminIndex]
+  if (!currentAdmin) {
+    return [defaultAdmin, ...users]
+  }
+
+  const nextAdmin: User = {
+    ...currentAdmin,
+    id: 'user_admin',
+    username: 'admin',
+    email: 'admin@bluesky.com',
+    password: '1234567890',
+    role: 'admin',
+    createdAt: currentAdmin.createdAt || createdAt,
+    updatedAt: now(),
+  }
+
+  return users.map((user, index) => (index === adminIndex ? nextAdmin : user))
 }
 
 function makeSeedTeams(): Team[] {
@@ -51,8 +87,8 @@ function makeSeedReports(): DailyReport[] {
       authorId: 'user_alice',
       authorName: 'alice',
       entries: [
-        { taskId: 'task_ui', taskName: 'User Management UI', done: 'Implemented role badges and delete confirmation.' },
-        { taskId: 'task_report', taskName: 'Report Dashboard', done: 'Completed daily report filter interactions.' },
+        { taskId: 'task_ui', taskName: 'User Management UI', completedValue: 20, referenceValue: 50, completedPercentage: 40 },
+        { taskId: 'task_report', taskName: 'Report Dashboard', completedValue: 30, referenceValue: 80, completedPercentage: 37.5 },
       ],
       globalNotes: 'Need review from manager.',
       createdAt,
@@ -65,7 +101,7 @@ function makeSeedReports(): DailyReport[] {
       teamName: 'Backend Team',
       authorId: 'user_admin',
       authorName: 'admin',
-      entries: [{ taskId: 'task_api', taskName: 'API Integration', done: 'Defined schema for assignment endpoints.' }],
+      entries: [{ taskId: 'task_api', taskName: 'API Integration', completedValue: 100, referenceValue: 100, completedPercentage: 100 }],
       createdAt,
       updatedAt: createdAt,
     },
@@ -104,6 +140,8 @@ export function initializeStorage(): void {
 
   if (!window.localStorage.getItem(STORAGE_KEYS.USERS)) {
     writeStorage(STORAGE_KEYS.USERS, makeSeedUsers())
+  } else {
+    writeStorage(STORAGE_KEYS.USERS, ensureDefaultAdmin(readStorage<User[]>(STORAGE_KEYS.USERS, [])))
   }
 
   if (!window.localStorage.getItem(STORAGE_KEYS.TEAMS)) {
@@ -118,7 +156,4 @@ export function initializeStorage(): void {
     writeStorage(STORAGE_KEYS.REPORTS, makeSeedReports())
   }
 
-  if (!window.localStorage.getItem(STORAGE_KEYS.CURRENT_USER)) {
-    writeStorage(STORAGE_KEYS.CURRENT_USER, 'user_admin')
-  }
 }

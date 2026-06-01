@@ -1,5 +1,6 @@
 import { format, startOfWeek } from 'date-fns'
 import type { DailyReport, ReportFilter } from '../../types/report.types'
+import type { Task } from '../../types/task.types'
 import type { Team } from '../../types/team.types'
 import type { User } from '../../types/user.types'
 import { STORAGE_KEYS, apiHandler, generateId } from './base'
@@ -10,7 +11,40 @@ function now(): string {
 }
 
 function getReportsRaw(): DailyReport[] {
-  return readStorage<DailyReport[]>(STORAGE_KEYS.REPORTS, [])
+  const rawReports = readStorage<DailyReport[]>(STORAGE_KEYS.REPORTS, [])
+  const tasks = readStorage<Task[]>(STORAGE_KEYS.TASKS, [])
+
+  // Normalize legacy report entries so old localStorage payloads remain readable.
+  return rawReports.map((report) => ({
+    ...report,
+    entries: report.entries.map((entry) => {
+      const task = tasks.find((item) => item.id === entry.taskId)
+      const legacyScore = Number((entry as ReportEntryLegacy).score ?? 0)
+      const completedValue = Number((entry as ReportEntryLegacy).completedValue ?? legacyScore)
+      const referenceValue = Number((entry as ReportEntryLegacy).referenceValue ?? task?.objective ?? 100)
+      const completedPercentage =
+        referenceValue > 0
+          ? Number((((entry as ReportEntryLegacy).completedPercentage ?? (completedValue / referenceValue) * 100)).toFixed(2))
+          : 0
+
+      return {
+        taskId: entry.taskId,
+        taskName: entry.taskName,
+        completedValue,
+        referenceValue,
+        completedPercentage,
+      }
+    }),
+  }))
+}
+
+type ReportEntryLegacy = {
+  taskId: string
+  taskName: string
+  completedValue?: number
+  referenceValue?: number
+  completedPercentage?: number
+  score?: number
 }
 
 function setReportsRaw(reports: DailyReport[]): void {

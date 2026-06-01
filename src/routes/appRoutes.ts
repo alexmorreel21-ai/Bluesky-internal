@@ -4,6 +4,7 @@ export const APP_ROUTES = {
   userManagement: '/user-management',
   teamManagement: '/team-management',
   assignment: '/assignment',
+  assignmentTeamDetails: '/assignment/team',
   report: '/report',
   teamDailyReport: '/team-management/daily-report',
   teamWorkMark: '/team-management/work-mark',

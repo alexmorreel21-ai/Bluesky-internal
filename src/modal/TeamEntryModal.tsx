@@ -93,9 +93,11 @@ function TeamEntryModal({
                 ))}
               </select>
 
-              <button type="submit" disabled={!isManager}>
-                Create team
-              </button>
+              <div className="flex justify-end">
+                <button type="submit" disabled={!isManager}>
+                  Create team
+                </button>
+              </div>
             </form>
           </section>
 
@@ -136,9 +138,11 @@ function TeamEntryModal({
                 ))}
               </select>
 
-              <button type="submit" disabled={!isManager || !hasTeam}>
-                Create team member
-              </button>
+              <div className="flex justify-end">
+                <button type="submit" disabled={!isManager || !hasTeam}>
+                  Create team member
+                </button>
+              </div>
             </form>
           </section>
         </div>

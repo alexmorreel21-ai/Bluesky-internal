@@ -1,7 +1,9 @@
 export interface ReportEntry {
   taskId: string
   taskName: string
-  done: string
+  completedValue: number
+  referenceValue: number
+  completedPercentage: number
 }
 
 export interface DailyReport {

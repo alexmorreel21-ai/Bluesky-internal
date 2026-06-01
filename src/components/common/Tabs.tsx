@@ -31,8 +31,8 @@ export function Tabs({ active, tabs, onChange, direction = 'horizontal' }: TabsP
     if (isVertical) {
       return `${
         selected
-          ? 'bg-gradient-to-r from-sky-500/30 to-sky-400/20 text-sky-200 ring-1 ring-sky-300/40'
-          : 'bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
+          ? 'bg-gradient-to-r from-sky-200 to-cyan-100 text-sky-900 ring-1 ring-sky-200 dark:from-sky-500/30 dark:to-sky-400/20 dark:text-sky-200 dark:ring-sky-300/40'
+          : 'bg-white/80 text-slate-700 ring-1 ring-sky-100 hover:bg-sky-50 hover:text-slate-900 dark:bg-white/5 dark:text-slate-300 dark:ring-0 dark:hover:bg-white/10 dark:hover:text-white'
       } w-full rounded-xl px-4 py-2.5 text-left text-sm font-semibold transition`
     }
 
@@ -45,7 +45,7 @@ export function Tabs({ active, tabs, onChange, direction = 'horizontal' }: TabsP
 
   const getSubmenuClass = () => {
     if (isVertical) {
-      return 'ml-2 w-[calc(100%-0.5rem)] overflow-hidden rounded-xl bg-slate-950/70'
+      return 'ml-2 w-[calc(100%-0.5rem)] overflow-hidden rounded-xl bg-white/80 ring-1 ring-sky-100 dark:bg-slate-950/70 dark:ring-0'
     }
 
     return 'absolute left-0 z-20 mt-2 min-w-40 rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-700 dark:bg-slate-900'
@@ -55,8 +55,8 @@ export function Tabs({ active, tabs, onChange, direction = 'horizontal' }: TabsP
     if (isVertical) {
       return `block w-full rounded-lg px-3 py-2 text-left text-sm ${
         selected
-          ? 'bg-sky-500/25 text-sky-100'
-          : 'text-slate-300 hover:bg-white/10 hover:text-white'
+          ? 'bg-sky-100 text-sky-900 dark:bg-sky-500/25 dark:text-sky-100'
+          : 'text-slate-600 hover:bg-sky-50 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white'
       }`
     }
 
@@ -94,7 +94,7 @@ export function Tabs({ active, tabs, onChange, direction = 'horizontal' }: TabsP
                 className={`${getSubmenuClass()} origin-top transition-all duration-300 ease-out ${
                   isVertical
                     ? isOpen
-                      ? 'mt-1 max-h-64 border border-slate-700/80 p-1 opacity-100'
+                      ? 'mt-1 max-h-64 border border-sky-100 p-1 opacity-100 dark:border-slate-700/80'
                       : 'mt-0 max-h-0 border border-transparent p-0 opacity-0'
                     : isOpen
                       ? 'pointer-events-auto translate-y-0 scale-y-100 opacity-100'

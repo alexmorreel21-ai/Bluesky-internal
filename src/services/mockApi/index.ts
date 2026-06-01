@@ -26,3 +26,11 @@ export function setCurrentUserId(userId: string): void {
 
   window.localStorage.setItem(STORAGE_KEYS.CURRENT_USER, userId)
 }
+
+export function clearCurrentUserId(): void {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  window.localStorage.removeItem(STORAGE_KEYS.CURRENT_USER)
+}

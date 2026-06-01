@@ -1,45 +1,18 @@
 import { useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { fetchCurrentSession, signInRequest } from '../api/auth'
-import { ApiError } from '../api/http'
-import { APP_ROUTES } from '../routes/appRoutes'
+import { useAuth } from '../contexts/AuthContext'
 
 function LoginWindow() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { currentUser, login } = useAuth()
+  const [email, setEmail] = useState('admin@bluesky.com')
+  const [password, setPassword] = useState('1234567890')
   const [errorMessage, setErrorMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const navigate = useNavigate()
-  const location = useLocation()
-
-  const nextPath =
-    (location.state as { from?: { pathname?: string } } | undefined)?.from?.pathname ||
-    APP_ROUTES.dashboard
 
   useEffect(() => {
-    let isMounted = true
-
-    async function hydrateSession() {
-      try {
-        await fetchCurrentSession()
-        if (isMounted) {
-          navigate(APP_ROUTES.dashboard, { replace: true })
-        }
-      } catch {
-        if (!isMounted) {
-          return
-        }
-
+    if (currentUser) {
         setErrorMessage('')
-      }
     }
-
-    void hydrateSession()
-
-    return () => {
-      isMounted = false
-    }
-  }, [navigate])
+  }, [currentUser])
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -47,17 +20,9 @@ function LoginWindow() {
     setIsSubmitting(true)
 
     try {
-      await signInRequest({
-        email: email.trim(),
-        password,
-      })
-      navigate(nextPath, { replace: true })
+      await login(email.trim(), password)
     } catch (error) {
-      if (error instanceof ApiError && error.status === 401) {
-        setErrorMessage('Invalid credentials. Please try again.')
-      } else {
-        setErrorMessage('Unable to sign in through the backend API.')
-      }
+      setErrorMessage(error instanceof Error ? error.message : 'Unable to sign in.')
     } finally {
       setIsSubmitting(false)
     }
@@ -65,45 +30,58 @@ function LoginWindow() {
 
   return (
     <main className="login-screen">
+      <div className="login-aurora login-aurora-left" aria-hidden="true" />
+      <div className="login-aurora login-aurora-right" aria-hidden="true" />
+
       <section className="login-panel" aria-label="Login window">
-        <h1 className="login-title">Sign in</h1>
-        <p className="login-subtitle">Use your account credentials to continue.</p>
+        <div className="login-showcase">
+          <p className="login-eyebrow">BlueSky</p>
+          <h1 className="login-title">BlueSky</h1>
+          <p className="login-subtitle">Bluesky is everywhere</p>
+        </div>
 
-        <form className="login-form" onSubmit={handleSubmit}>
-          <label className="login-label" htmlFor="email">
-            Email
-          </label>
-          <input
-            id="email"
-            className="login-input"
-            type="email"
-            placeholder="name@company.com"
-            autoComplete="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
+        <div className="login-form-panel">
+          <form className="login-form" onSubmit={handleSubmit}>
+            <div className="login-form-header">
+              <p className="login-form-kicker">Welcome back</p>
+              <p className="login-form-note">Enter the admin credentials to continue.</p>
+            </div>
 
-          <label className="login-label" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            className="login-input"
-            type="password"
-            placeholder="Enter your password"
-            autoComplete="current-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-          />
+            <label className="login-label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className="login-input"
+              type="email"
+              placeholder="name@company.com"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
 
-          {errorMessage && <p className="form-message is-error">{errorMessage}</p>}
+            <label className="login-label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              className="login-input"
+              type="password"
+              placeholder="Enter your password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
 
-          <button className="login-button" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Signing in...' : 'Sign in'}
-          </button>
-        </form>
+            {errorMessage ? <p className="login-feedback login-feedback-error">{errorMessage}</p> : null}
+
+            <button className="login-button" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Signing in...' : 'Sign in'}
+            </button>
+          </form>
+        </div>
       </section>
     </main>
   )

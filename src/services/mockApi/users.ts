@@ -22,6 +22,16 @@ export const getUsers = async (): Promise<User[]> =>
 export const getUserById = async (id: string): Promise<User | null> =>
   apiHandler(() => getUsersRaw().find((item) => item.id === id) ?? null)
 
+export const authenticateUser = async (email: string, password: string): Promise<User | null> =>
+  apiHandler(() => {
+    const normalizedEmail = email.trim().toLowerCase()
+    return (
+      getUsersRaw().find(
+        (item) => item.email.toLowerCase() === normalizedEmail && item.password === password,
+      ) ?? null
+    )
+  })
+
 export const addUser = async (userData: UserInput): Promise<User> =>
   apiHandler(() => {
     const users = getUsersRaw()
